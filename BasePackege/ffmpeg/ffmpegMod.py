@@ -153,7 +153,8 @@ class ffpegPy:
     def cutVideo(self, startPoint, endPoint, path, newFile,ffmpegPath):
         command = [ffmpegPath, '-ss', startPoint, '-t', endPoint, '-accurate_seek',
                    '-i', path, '-codec', 'copy', '-avoid_negative_ts', '1', newFile]
-        subprocess.call(command)
+        CREATE_NO_WINDOW = 0x08000000
+        subprocess.call(command, creationflags = CREATE_NO_WINDOW)
         return 1
         # 删除到回收站
 
