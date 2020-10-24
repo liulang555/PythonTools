@@ -1,10 +1,8 @@
 import os
 import sys
-import ImgAddMark_Base
-#把当前文件的上两级目录加到查询列表
-sys.path.insert(0,os.path.abspath(os.path.join(os.path.realpath(__file__), "../..")))
-from EditorMovieInfo import EditorMovieInfo_Base
-from Base import LogToLocal
+import ImgAddMark
+import EditorMovieInfo
+import LogToLocal
 
 uncensoredName = r"/UNCENSORED.png"   #无码
 subName = r"/SUB.png"   #字幕
@@ -40,20 +38,20 @@ if __name__=="__main__":
   for filename in filenames:
     if filename.endswith(thumb_end):
       if uncensored == 1:
-        ImgAddMark_Base.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark_Base.MarkPos.LeftTop,uncensoredPath)
+        ImgAddMark.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark.MarkPos.LeftTop,uncensoredPath)
       if cn_sub == 1:
-        ImgAddMark_Base.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark_Base.MarkPos.RightTop,subPath)
+        ImgAddMark.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark.MarkPos.RightTop,subPath)
     if filename.endswith(poster_end):
       if uncensored == 1:
-        ImgAddMark_Base.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark_Base.MarkPos.LeftTop,uncensoredPath)
+        ImgAddMark.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark.MarkPos.LeftTop,uncensoredPath)
       if cn_sub == 1:
-        ImgAddMark_Base.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark_Base.MarkPos.RightTop,subPath)
+        ImgAddMark.AddMarkToPic(os.path.join(filePath,filename),ImgAddMark.MarkPos.RightTop,subPath)
     if filename.endswith(nfo_end):
       if uncensored == 1:
-        EditorMovieInfo_Base.AddTag(os.path.join(filePath,filename),"无码")
+        EditorMovieInfo.AddTag(os.path.join(filePath,filename),"无码")
       if cn_sub == 1:
-        EditorMovieInfo_Base.AddTag(os.path.join(filePath,filename),"字幕")
+        EditorMovieInfo.AddTag(os.path.join(filePath,filename),"字幕")
 
 
   # os.system("pause")
-  # ImgAddMark_Base.AddMarkToPic("D:\SourceTreeFloder\PythonTools\AddMarkToImg\SVS-033-thumb.jpg",ImgAddMark_Base.MarkPos.LeftTop,uncensoredPath)
+  # ImgAddMark.AddMarkToPic("D:\SourceTreeFloder\PythonTools\AddMarkToImg\SVS-033-thumb.jpg",ImgAddMark.MarkPos.LeftTop,uncensoredPath)
