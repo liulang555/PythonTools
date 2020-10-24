@@ -25,16 +25,10 @@ class ffpegPy:
         # 日志还是打印到调用方的文件夹中
         self.Debug = LogToLocal.Debug()
         self.Debug.InitLogger(sys.path[0])
-        # LogPath = sys.path[0] + '\\' + LogFileName
-        # self.GetLogger(LogPath)
-        # self.Debug.Log("work path: "+sys.path[0])
-        # self.Debug.Log("ffmpegPath: "+ffmpegPath)
-        # self.Debug.Log("LogPath: "+LogPath)
-        # self.Debug.Log("abs_file: "+abs_file)
-        # self.Debug.Log("abs_dir: "+abs_dir)
+
         # 创建新的生成的.mp4文件路径
         newFile = self.GetNewFileName(path)
-        self.Debug.Log(newFile)
+        self.Debug.Log('newFile: '+newFile)
         startcut = self.GetStartTime(starttime)
         endcut = self.GetStartTime(endtime)
         videoInfo = self.get_video_length(path,ffmpegPath)  # 视频信息获取 为一tuple
@@ -58,6 +52,7 @@ class ffpegPy:
 			# 去掉源文件中的-CD1  -CD2等文字
             for num in range(1, CDMaxNum):
                 curpath = curpath.replace('-CD'+str(num), '')
+            self.Debug.Log('replace name'+curpath)
             os.rename(newFile, curpath)
         # return retcode
         return 1
@@ -81,14 +76,13 @@ class ffpegPy:
             if not os.path.exists(newFile):
                 return newFile
 
-
-# 获取视频的 duration 时长 长 宽
-
-
+    # 获取视频的 duration 时长 长 宽
     def get_video_length(self, path,ffmpegPath):
+        self.Debug.Log('ffmpegMod get_video_length start ')
         process = subprocess.Popen(
             [ffmpegPath, '-i', path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout, stderr = process.communicate()
+        self.Debug.Log('stdout')
         self.Debug.Log(stdout)
         pattern_duration = re.compile(
             "Duration:\s{1}(\d+?):(\d+?):(\d+\.\d+?),")
@@ -97,6 +91,7 @@ class ffpegPy:
         matches = re.search(pattern_duration, stdout.decode('utf-8')).groups()
         self.Debug.Log("matches:  "+str(matches))
         size = re.search(pattern_size, stdout.decode('utf-8')).groups()
+        self.Debug.Log('size: ')
         self.Debug.Log(size)
         #matches = re.search(r"Duration:\s{1}(?P\d+?):(?P\d+?):(?P\d+\.\d+?),", stdout, re.DOTALL).groupdict()
         hours = Decimal(matches[0])
