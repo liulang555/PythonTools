@@ -1,3 +1,3 @@
-python D:\QQCloudSync\Python\EditorNFO\DeleteNFO.py
+python D:\SourceTreeFloder\PythonTools\InfoEditor\NormalizeNFO\NormalizeNFO.py
 
 pause

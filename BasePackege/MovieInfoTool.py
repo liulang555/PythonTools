@@ -4,6 +4,7 @@
 import xml.etree.ElementTree as ET
 import LogTool
 import sys
+import os
 
 tagElement_tag = "tag"
 tagElement_genre = "genre"
@@ -24,7 +25,7 @@ class MovieInfoTool:
 		self.DeleteRemoveAllTag(tagElement_genre)
 		for tag in list:
 			self.AddTag(tag)
-		self.tree.write(self.path,"utf-8")
+		self.SaveNFO()
 	def AddTag(self,title):
 		# 增加
 		e = ET.Element(tagElement_genre)
@@ -47,3 +48,21 @@ class MovieInfoTool:
 		for element in self.root.findall(tagElement_genre):
 			list.append(element.text)
 		return list
+	def SaveNFO(self):
+		#保存修改   因为权限的问题  直接先删除，再保存
+		os.remove(self.path)
+		self.tree.write(self.path,"utf-8")
+	#编辑标签
+	#删除不要的
+	#修改不合适的名字
+	def NormalizeNFO(self,DeleteConfig,ChangeConfigDic):
+		for element in self.root.findall(tagElement_genre):
+			text = element.text   # 访问Element文本
+			# print("读取 " + text)
+			if text in DeleteConfig:
+				# print("删除： "+text)
+				self.root.remove(element)
+			if text in ChangeConfigDic:
+				# print("改名： "+text)
+				element.text = ChangeConfigDic[text]
+		self.SaveNFO()
