@@ -5,12 +5,12 @@ import os
 from decimal import Decimal
 import math
 import sys
-import logging
+import LogToLocal
 # python -m pip install pypiwin32    安装方式，使用cmd执行这句
 from win32com.shell import shell, shellcon
 
 ffmpegName = 'ffmpeg'
-LogFileName = 'CutMovieLog.log'
+
 CDMaxNum = 100
 
 
@@ -23,30 +23,32 @@ class ffpegPy:
         #拼接成ffmpeg 路径
         ffmpegPath = abs_dir + '\\' + ffmpegName
         # 日志还是打印到调用方的文件夹中
-        LogPath = sys.path[0] + '\\' + LogFileName
-        self.GetLogger(LogPath)
-        # self.logger.info("work path: "+sys.path[0])
-        # self.logger.info("ffmpegPath: "+ffmpegPath)
-        # self.logger.info("LogPath: "+LogPath)
-        # self.logger.info("abs_file: "+abs_file)
-        # self.logger.info("abs_dir: "+abs_dir)
+        self.Debug = LogToLocal.Debug()
+        self.Debug.InitLogger(sys.path[0])
+        # LogPath = sys.path[0] + '\\' + LogFileName
+        # self.GetLogger(LogPath)
+        # self.Debug.Log("work path: "+sys.path[0])
+        # self.Debug.Log("ffmpegPath: "+ffmpegPath)
+        # self.Debug.Log("LogPath: "+LogPath)
+        # self.Debug.Log("abs_file: "+abs_file)
+        # self.Debug.Log("abs_dir: "+abs_dir)
         # 创建新的生成的.mp4文件路径
         newFile = self.GetNewFileName(path)
-        self.logger.info(newFile)
+        self.Debug.Log(newFile)
         startcut = self.GetStartTime(starttime)
         endcut = self.GetStartTime(endtime)
         videoInfo = self.get_video_length(path,ffmpegPath)  # 视频信息获取 为一tuple
-        # self.logger.info(videoInfo)
+        # self.Debug.Log(videoInfo)
         duration = videoInfo[0]  # 时长 秒
         # 毫秒更精确 6秒
         startPoint = self.millisecToAssFormat(startcut)  # 毫秒更精确 6秒
         # 毫秒更精确 13.5秒 #duration*1000-endcut*1000 #毫秒更精确 13.5秒
         endPoint = self.millisecToAssFormat(duration*1000-endcut-startcut)
-        self.logger.info('*'*50)
-        self.logger.info("startPoint:  "+startPoint+"     endPoint:"+endPoint)
+        self.Debug.Log('*'*50)
+        self.Debug.Log("startPoint:  "+startPoint+"     endPoint:"+endPoint)
         # self.cutVideo(startPoint,endPoint,path,newFile)
         retcode = self.cutVideo(startPoint, endPoint, path, newFile,ffmpegPath)
-        self.logger.info(retcode)
+        self.Debug.Log(retcode)
 		# 如果需要删除源文件
         if retcode == 1 and isReplace == True:
             # os.remove(path)
@@ -60,29 +62,15 @@ class ffpegPy:
         # return retcode
         return 1
 
-    def GetLogger(self,LogPath):
-        if os.path.exists(LogPath):
-            os.remove(LogPath)
-        self.logger = logging.getLogger(LogFileName)
-        self.logger.setLevel(logging.DEBUG)
-        fh = logging.FileHandler(LogPath)
-        fh.setLevel(logging.DEBUG)
-        ch = logging.StreamHandler()
-        ch.setLevel(logging.DEBUG)
-        formatter = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-        fh.setFormatter(formatter)
-        ch.setFormatter(formatter)
-        self.logger.addHandler(fh)
-        self.logger.addHandler(ch)
+
 
     # 获取一个未曾创建的名字
     def GetNewFileName(self, path):
         curpath = path
         for num in range(1, CDMaxNum):
             curpath = curpath.replace('-CD'+str(num), '')
-        # self.logger.info("ffmpegMod GetNewFileName curpath"+curpath)
-        # self.logger.info("ffmpegMod GetNewFileName curpath[:-4]"+curpath[:-4])
+        # self.Debug.Log("ffmpegMod GetNewFileName curpath"+curpath)
+        # self.Debug.Log("ffmpegMod GetNewFileName curpath[:-4]"+curpath[:-4])
         basename = os.path.basename(path)
         file = os.path.splitext(basename)
         for num in range(1, CDMaxNum):
@@ -101,15 +89,15 @@ class ffpegPy:
         process = subprocess.Popen(
             [ffmpegPath, '-i', path], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         stdout, stderr = process.communicate()
-        self.logger.info(stdout)
+        self.Debug.Log(stdout)
         pattern_duration = re.compile(
             "Duration:\s{1}(\d+?):(\d+?):(\d+\.\d+?),")
         # ",\s{1}(\d+?)x(\d+?)\s{1}\["
         pattern_size = re.compile(",\s{1}(\d{3,4})x(\d{3,4})\s{0,2}")
         matches = re.search(pattern_duration, stdout.decode('utf-8')).groups()
-        self.logger.info("matches:  "+str(matches))
+        self.Debug.Log("matches:  "+str(matches))
         size = re.search(pattern_size, stdout.decode('utf-8')).groups()
-        self.logger.info(size)
+        self.Debug.Log(size)
         #matches = re.search(r"Duration:\s{1}(?P\d+?):(?P\d+?):(?P\d+\.\d+?),", stdout, re.DOTALL).groupdict()
         hours = Decimal(matches[0])
         minutes = Decimal(matches[1])
