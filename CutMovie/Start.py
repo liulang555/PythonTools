@@ -2,7 +2,7 @@
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
 from MainUI import Ui_Dialog
-import ffmpegMod
+import ffmpegTool
 
 class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):
@@ -18,7 +18,7 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def confirm_btn(self):
         print(self.StartTimelineEdit.text())
         print(self.EndTimelineEdit.text())
-        ffpeg = ffmpegMod.ffpegPy()
+        ffpeg = ffmpegTool.ffmpegTool()
         path = sys.argv[1]  # 从批处理传进参数 文件的完整路径
         #print("批处理文件里面的路径参数：  "+path)
         retcode = ffpeg.CutMovie(

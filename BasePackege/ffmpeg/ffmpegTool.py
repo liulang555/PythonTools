@@ -5,17 +5,17 @@ import os
 from decimal import Decimal
 import math
 import sys
-import LogToLocal
+import LogTool
 # python -m pip install pypiwin32    安装方式，使用cmd执行这句
 from win32com.shell import shell, shellcon
 
 ffmpegName = 'ffmpeg'
 CDMaxNum = 100
 
-Debug = LogToLocal.Debug()
+Debug = LogTool.Debug()
 Debug.InitLogger(sys.path[0])
 
-class ffpegPy:
+class ffmpegTool:
     def CutMovie(self, path, starttime, endtime, isReplace):
         #获取当前文件的绝对路径
         abs_file = __file__

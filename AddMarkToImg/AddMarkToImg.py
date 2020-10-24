@@ -11,6 +11,7 @@ thumb_end =  '-thumb.jpg'
 poster_end = '-poster.jpg'
 nfo_end = '.nfo'
 
+
 if __name__=="__main__":
   # 当前文件的绝对路径
   current_dir = os.path.dirname(os.path.abspath(__file__))
