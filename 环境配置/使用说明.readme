@@ -1,0 +1,12 @@
+1.  本地模块使用说明  
+module_myLocalPackge.pth  放到 Python安装目录下的\Lib\site-packages文件夹中
+示例    C:\Users\BugCreater\Anaconda3\Lib\site-packages
+
+增删 直接修改文件里面的路径就可以了
+
+
+2. 需要往上导入的库文件列表  requirements.txt
+
+新环境中通过此文件可以直接安装模块（注:需要先切换到 requirements.txt的上级目录，也就是项目根目录）
+
+在项目根目录下执行pip install -i https://pypi.doubanio.com/simple/ -r requirements.txt(国内镜像安装)
