@@ -25,6 +25,7 @@ class MarkType(Enum):
 horizontalSlider_mark_size = 5  #水印大小
 thumb_end =  '-thumb.jpg'
 poster_end = '-poster.jpg'
+fanart_end = '-fanart.jpg'
 
 uncensoredName = r"/UNCENSORED.png"   #无码
 subName = r"/SUB.png"   #字幕
@@ -32,16 +33,16 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 uncensoredPath = current_dir + uncensoredName
 subPath = current_dir + subName
 
-def AddMark(filePath,markTypeList):
-    markTypeList.sort()
+def AddMark(filePath,sortlist):
+    sortlist.sort()
     filenames = os.listdir(filePath)
     for filename in filenames:
         if filename.endswith(thumb_end):
             curFilePath = os.path.join(filePath,filename)
-            judgeTypeToPic(curFilePath,markTypeList)
+            judgeTypeToPic(curFilePath,sortlist)
         if filename.endswith(poster_end):
             curFilePath = os.path.join(filePath,filename)
-            judgeTypeToPic(curFilePath,markTypeList)
+            judgeTypeToPic(curFilePath,sortlist)
 
 def judgeTypeToPic(curFilePath,sortlist):
     # 从 MarkType 类型最小值开始循环，第一个就是左上角，第二个就是右上角
