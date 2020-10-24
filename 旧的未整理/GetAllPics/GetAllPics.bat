@@ -1,0 +1,3 @@
+python GetAllPics.py
+
+pause

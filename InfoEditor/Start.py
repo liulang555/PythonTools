@@ -1,47 +1,97 @@
+from PyQt5 import QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
-import LogToLocal
-import EditorConfig
-import EditorMovieInfo
+from MainUI import Ui_Dialog
+import LogTool
+import ConfigTool
+import MovieInfoTool
+import DirTool
 import os
 import sys
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-Debug = LogToLocal.Debug()
+Debug = LogTool.Debug()
 Debug.InitLogger(current_dir)
 
-TagConfiName = "TagConfig"
+ConfigCheboxID = 10000
+TagConfiName = "TagConfig.txt"
 
-EditorConfig = EditorConfig.EditorConfig()
-
-class Widget(QtWidgets.QWidget):
+class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):
-        super().__init__()
-        layout = QtWidgets.QVBoxLayout()
-        items = [(0, 'Python'), (1, 'Golang'), (2, 'JavaScript'), (3, 'Ruby')]
-        for id_, txt in items:
-            checkBox = QtWidgets.QCheckBox(txt, self)
-            checkBox.id_ = id_
-            checkBox.stateChanged.connect(self.checkLanguage)
-            layout.addWidget(checkBox)
+        super(mywindow, self).__init__()
+        self.setupUi(self)
+        self.pushButton_3.clicked.connect(self.confirm_btn)
+        self.pushButton_2.clicked.connect(self.openConfig_btn)
+        self.checkBox.stateChanged.connect(self.AllMovieInfoListCheckBox)
+        self.InitMovieInfoList()
+        self.InitConfigList()
 
-        self.lMessage = QtWidgets.QLabel(self)
-        layout.addWidget(self.lMessage)
-        self.setLayout(layout)
+    def InitMovieInfoList(self):
+        self.filePath =  sys.argv[1]
+        self.workPath = sys.path[0]
+        Debug.Log("self.workPath: " + self.workPath)
+        self.InfoFileList = DirTool.GetAllMovieInfoFile(self.filePath)
+        self.MovieInfoToolList = []
+        for file in self.InfoFileList:
+            Debug.Log("self.InfoFileList: " + file)
+            item = MovieInfoTool.MovieInfoTool()
+            item.ReadInfoFile(file,Debug)
+            self.MovieInfoToolList.append(item)
+        alltag = self.MovieInfoToolList[0].GetAllTags()
+        self.checkBoxList = []
+        for index in range(len(alltag)):
+            Debug.Log("alltag: " + alltag[index])
+            checkBox = QtWidgets.QCheckBox(alltag[index], self)
+            checkBox.id_ = index
+            checkBox.setChecked(True)
+            self.checkBoxList.append(checkBox)
+            checkBox.stateChanged.connect(self.SelectTag)
+            self.verticalLayout.addWidget(checkBox)
+    def InitConfigList(self):
+        self.configPath = self.workPath + '\\' + TagConfiName
+        Debug.Log("self.configPath: " + self.configPath)
+        self.configList = ConfigTool.ReadConfig(self.configPath)
+        for index in range(len(self.configList)):
+            Debug.Log("configList: " + self.configList[index] )
+            checkBox = QtWidgets.QCheckBox(self.configList[index], self)
+            checkBox.id_ = index + ConfigCheboxID
+            checkBox.stateChanged.connect(self.SelectTag)
+            self.verticalLayout_2.addWidget(checkBox)
+            self.checkBoxList.append(checkBox)
 
-    def InitInfoList(self):
-        filePath = sys.argv[1]
-        Debug.Log("Start: " + filePath)
-
-
-    def checkLanguage(self, state):
+    def SelectTag(self, state):
         checkBox = self.sender()
         if state == QtCore.Qt.Unchecked:
-            self.lMessage.setText(u'取消选择了{0}: {1}'.format(checkBox.id_, checkBox.text()))
+            Debug.Log('取消选择 : '+ checkBox.text())
         elif state == QtCore.Qt.Checked:
-            self.lMessage.setText(u'选择了{0}: {1}'.format(checkBox.id_, checkBox.text()))
+            Debug.Log('选择 : '+ checkBox.text())
 
-if __name__ == '__main__':
+    def openConfig_btn(self):
+        Debug.Log("openConfig_btn: ")
+
+    def AllMovieInfoListCheckBox(self, state):
+        if state == QtCore.Qt.Unchecked:
+            Debug.Log('取消选择 : '+ self.checkBox.text())
+            for checkBox in self.checkBoxList:
+                if checkBox.id_ < ConfigCheboxID :
+                    checkBox.setChecked(False)
+        elif state == QtCore.Qt.Checked:
+            Debug.Log('选择 : '+ self.checkBox.text())
+            for checkBox in self.checkBoxList:
+                if checkBox.id_ < ConfigCheboxID :
+                    checkBox.setChecked(True)
+
+    def confirm_btn(self):
+        Debug.Log("confirm_btn: ")
+        list = []
+        for checkBox in self.checkBoxList:
+            if checkBox.isChecked() == True:
+                list.append(checkBox.text())
+                Debug.Log("confirm_btn: " + checkBox.text())
+        for item in self.MovieInfoToolList:
+            item.SaveAllTag(list)
+
+if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
-    widget = Widget()
-    widget.show()
+    ui = mywindow()
+    ui.show()
     sys.exit(app.exec_())

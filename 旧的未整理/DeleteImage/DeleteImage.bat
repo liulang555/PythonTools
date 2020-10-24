@@ -1,0 +1,3 @@
+python DeleteImage.py
+
+pause
