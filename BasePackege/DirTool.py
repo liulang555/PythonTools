@@ -4,10 +4,10 @@ import LogTool
 import sys
 import os
 
-def GetAllMovieInfoFile(file_dir):
+def GetAllMovieInfoFile(file_dir,Debug):
 	L=[]
-	for dirpath, dirnames, filenames in os.walk(file_dir):  
-		for file in filenames :  
-			if os.path.splitext(file)[1] == '.nfo':  
-				L.append(os.path.join(dirpath, file))  
+	for filename in os.listdir(file_dir):
+		if os.path.splitext(filename)[1] == '.nfo':
+			Debug.Log("isnfo: "+os.path.join(file_dir,filename))
+			L.append(os.path.join(file_dir,filename))
 	return L

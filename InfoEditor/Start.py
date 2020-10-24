@@ -26,10 +26,9 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
         self.InitConfigList()
 
     def InitMovieInfoList(self):
-        self.filePath =  sys.argv[1]
+        self.filePath = sys.argv[1]
         self.workPath = sys.path[0]
-        Debug.Log("self.workPath: " + self.workPath)
-        self.InfoFileList = DirTool.GetAllMovieInfoFile(self.filePath)
+        self.InfoFileList = DirTool.GetAllMovieInfoFile(self.filePath,Debug)
         self.MovieInfoToolList = []
         for file in self.InfoFileList:
             Debug.Log("self.InfoFileList: " + file)
@@ -67,6 +66,7 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
 
     def openConfig_btn(self):
         Debug.Log("openConfig_btn: ")
+        os.system(r'notepad ' + self.configPath)
 
     def AllMovieInfoListCheckBox(self, state):
         if state == QtCore.Qt.Unchecked:
@@ -89,9 +89,18 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
                 Debug.Log("confirm_btn: " + checkBox.text())
         for item in self.MovieInfoToolList:
             item.SaveAllTag(list)
+        self.close()
+        Debug.Log("编辑成功！")
 
 if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    ui = mywindow()
-    ui.show()
-    sys.exit(app.exec_())
+    Debug.Log("self.workPath: " + sys.path[0])
+    Debug.Log("self.filePath: " + sys.argv[1][:-1])
+    list = DirTool.GetAllMovieInfoFile(sys.argv[1][:-1],Debug)
+    Debug.Log("self.InfoFileList count: " + str(len(list)))
+    if len(list) == 0:
+        Debug.Log("路径选择错误")
+    else:
+        app = QtWidgets.QApplication(sys.argv)
+        ui = mywindow()
+        ui.show()
+        sys.exit(app.exec_())
