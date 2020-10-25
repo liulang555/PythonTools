@@ -8,49 +8,42 @@ from PIL import Image
 from enum import Enum
 import os
 
-#水印的位置
+#水印的位置（和MarkType(Enum)一一对应）
 class MarkPos(Enum):
     LeftTop = 0
     RightTop = 1
     RightBottom = 2
     LeftBottom = 3
 
-# 水印的类型
+# 水印的类型 （增加需要一并增加图片（MarkIconName）和路径（MarkIconPath））
 class MarkType(Enum):
-    noneMark = 0 #没有标签
-    uncensored = 1 #无码
-    cn_sub = 2 #字幕
+    uncensored = 0 #无码
+    cn_sub = 1 #字幕
 
+#需要修改的图片列表  直接加就可以
+MarkImgEndList = ['-thumb.jpg','-poster.jpg','-fanart.jpg']
+
+MarkIconName = [r"/UNCENSORED.png",r"/SUB.png"]  #和 MarkType(Enum) 对应
+MarkIconPath = [] #和 MarkType(Enum) 对应
+current_dir = os.path.dirname(os.path.abspath(__file__))
+MarkIconPath.append(current_dir + MarkIconName[MarkType.uncensored.value]) #和 MarkType(Enum) 对应
+MarkIconPath.append(current_dir + MarkIconName[MarkType.cn_sub.value]) #和 MarkType(Enum) 对应
 
 horizontalSlider_mark_size = 5  #水印大小
-thumb_end =  '-thumb.jpg'
-poster_end = '-poster.jpg'
-fanart_end = '-fanart.jpg'
-
-uncensoredName = r"/UNCENSORED.png"   #无码
-subName = r"/SUB.png"   #字幕
-current_dir = os.path.dirname(os.path.abspath(__file__))
-uncensoredPath = current_dir + uncensoredName
-subPath = current_dir + subName
 
 def AddMark(filePath,sortlist):
     sortlist.sort()
     filenames = os.listdir(filePath)
     for filename in filenames:
-        if filename.endswith(thumb_end):
-            curFilePath = os.path.join(filePath,filename)
-            judgeTypeToPic(curFilePath,sortlist)
-        if filename.endswith(poster_end):
-            curFilePath = os.path.join(filePath,filename)
-            judgeTypeToPic(curFilePath,sortlist)
+        for iconEnd in MarkImgEndList:
+            if filename.endswith(iconEnd): #每个图片都是一个逻辑
+                curFilePath = os.path.join(filePath,filename)
+                judgeTypeToPic(curFilePath,sortlist)
 
 def judgeTypeToPic(curFilePath,sortlist):
     # 从 MarkType 类型最小值开始循环，第一个就是左上角，第二个就是右上角
     for index in range(len(sortlist)):
-        if MarkType(sortlist[index]) == MarkType.uncensored:
-            AddMarkToOnePic(curFilePath,MarkPos(index),uncensoredPath)
-        if MarkType(sortlist[index]) == MarkType.cn_sub:
-            AddMarkToOnePic(curFilePath,MarkPos(index),subPath)
+        AddMarkToOnePic(curFilePath,MarkPos(index),MarkIconPath[sortlist[index]])
 
 def AddMarkToOnePic(picSourcePath, markPos, mark_pic_path):
 	#需要加水印的图片
