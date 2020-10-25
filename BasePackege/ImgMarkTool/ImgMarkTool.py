@@ -23,6 +23,7 @@ class MarkType(Enum):
 #需要修改的图片列表  直接加就可以
 MarkImgEndList = ['-thumb.jpg','-poster.jpg','-fanart.jpg']
 
+MarkTagName = [r"无码",r"字幕"]  #和 MarkType(Enum) 对应
 MarkIconName = [r"/UNCENSORED.png",r"/SUB.png"]  #和 MarkType(Enum) 对应
 MarkIconPath = [] #和 MarkType(Enum) 对应
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -31,7 +32,22 @@ MarkIconPath.append(current_dir + MarkIconName[MarkType.cn_sub.value]) #和 Mark
 
 horizontalSlider_mark_size = 5  #水印大小
 
+#通过marktype 获取中文标签名字
+def GetMarkTagNameByMarkType(markTypeValue):
+    return MarkTagName[markTypeValue]
+
+#通过标签列表添加水印
+def AddMarkBytagList(filePath,tagList):
+    sortlist = []
+    for tag in tagList:
+        for index in range(len(MarkTagName)):
+            if MarkTagName[index] == tag:
+                sortlist.append(index)
+    AddMark(filePath,sortlist)
+
 def AddMark(filePath,sortlist):
+    if len(sortlist) <= 0:
+        return 0
     sortlist.sort()
     filenames = os.listdir(filePath)
     for filename in filenames:

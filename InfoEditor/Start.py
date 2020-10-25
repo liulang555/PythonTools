@@ -4,6 +4,7 @@ from MainUI import Ui_Dialog
 import LogTool
 import ConfigTool
 import MovieInfoTool
+import ImgMarkTool
 import DirTool
 import os
 import sys
@@ -28,14 +29,9 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def InitMovieInfoList(self):
         self.filePath = sys.argv[1]
         self.workPath = sys.path[0]
-        self.InfoFileList = DirTool.GetAllMovieInfoFile(self.filePath,Debug)
-        self.MovieInfoToolList = []
-        for file in self.InfoFileList:
-            Debug.Log("self.InfoFileList: " + file)
-            item = MovieInfoTool.MovieInfoTool()
-            item.ReadInfoFile(file,Debug)
-            self.MovieInfoToolList.append(item)
-        alltag = self.MovieInfoToolList[0].GetAllTags()
+        self.MovieInfoToolList = MovieInfoTool.MovieInfoToolList()
+        self.MovieInfoToolList.ReadInfoFile(self.filePath,Debug)
+        alltag = self.MovieInfoToolList.GetAllTags()
         self.checkBoxList = []
         for index in range(len(alltag)):
             Debug.Log("alltag: " + alltag[index])
@@ -82,22 +78,25 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
 
     def confirm_btn(self):
         Debug.Log("confirm_btn: ")
-        list = []
+        curlist = []
         for checkBox in self.checkBoxList:
             if checkBox.isChecked() == True:
-                list.append(checkBox.text())
+                curlist.append(checkBox.text())
                 Debug.Log("confirm_btn: " + checkBox.text())
-        for item in self.MovieInfoToolList:
-            item.SaveAllTag(list)
+        self.MovieInfoToolList.SaveAllTag(curlist)
         self.close()
+        self.SetImgMark(curlist)
         Debug.Log("编辑成功！")
+    #添加水印
+    def SetImgMark(self,curlist):
+        ImgMarkTool.AddMarkBytagList(self.filePath,curlist)
 
 if __name__ == "__main__":
     Debug.Log("self.workPath: " + sys.path[0])
     Debug.Log("self.filePath: " + sys.argv[1][:-1])
-    list = DirTool.GetAllMovieInfoFile(sys.argv[1][:-1],Debug)
-    Debug.Log("self.InfoFileList count: " + str(len(list)))
-    if len(list) == 0:
+    curlist = DirTool.GetAllMovieInfoFile(sys.argv[1][:-1],Debug)
+    Debug.Log("self.InfoFileList count: " + str(len(curlist)))
+    if len(curlist) == 0:
         Debug.Log("路径选择错误")
     else:
         app = QtWidgets.QApplication(sys.argv)
