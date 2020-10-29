@@ -32,6 +32,8 @@ if __name__=="__main__":
 	openFile = random.sample(randomFileList, 1)
 	# Debug.Log("随机路径：" + openFile[0])
 	process = subprocess.Popen(
-            [dopusrtPath, '/open', openFile[0]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+            [dopusrtPath, '/acmd','Go', openFile[0]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 	stdout, stderr = process.communicate()
+	# print(stdout)
+	# print(stderr)
 
