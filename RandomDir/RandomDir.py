@@ -11,8 +11,12 @@ import DirTool
 import LogTool
 import MovieInfoTool
 import random
+import subprocess
 
 deleteFolderConfigName = r"DirList.txt"
+dopusrtPath = r"C:\\Program Files\\GPSoftware\\Directory Opus\\dopusrt.exe"
+#参考页面
+# http://127.0.0.1:36787/v12.12/index.html#!Documents/DOpusRT_Reference.htm
 #需要删除的文件夹路径
 Deletelist_Folder = []
 
@@ -27,7 +31,7 @@ if __name__=="__main__":
 				randomFileList.append(os.path.dirname(file))
 	openFile = random.sample(randomFileList, 1)
 	# Debug.Log("随机路径：" + openFile[0])
-	os.system("explorer.exe %s" % openFile[0])
-	# os.system("pause")
-
+	process = subprocess.Popen(
+            [dopusrtPath, '/open', openFile[0]], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+	stdout, stderr = process.communicate()
 
