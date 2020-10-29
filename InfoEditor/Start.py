@@ -14,7 +14,7 @@ Debug = LogTool.Debug()
 Debug.InitLogger(current_dir)
 
 ConfigCheboxID = 10000
-TagConfiName = "TagConfig.txt"
+TagConfiName = "可编辑标签.txt"
 
 class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):
@@ -42,9 +42,7 @@ class mywindow(QtWidgets.QWidget, Ui_Dialog):
             checkBox.stateChanged.connect(self.SelectTag)
             self.verticalLayout.addWidget(checkBox)
     def InitConfigList(self):
-        self.configPath = self.workPath + '\\' + TagConfiName
-        Debug.Log("self.configPath: " + self.configPath)
-        self.configList = ConfigTool.ReadConfig(self.configPath)
+        self.configList = ConfigTool.ReadConfigByTxtName(TagConfiName)
         for index in range(len(self.configList)):
             Debug.Log("configList: " + self.configList[index] )
             checkBox = QtWidgets.QCheckBox(self.configList[index], self)

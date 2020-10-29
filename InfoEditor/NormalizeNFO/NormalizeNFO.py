@@ -16,9 +16,9 @@ Debug = LogTool.Debug()
 Debug.InitLogger(current_dir)
 
 
-deleteFolderConfigName = r"DirList.txt"
-deleteTagConfigName = r"DeleteConfig.txt"
-changeTagConfigName = r"ChangeConfig.txt"
+deleteFolderConfigName = r"规范标签--文件夹.txt"
+deleteTagConfigName = r"规范标签--删除.txt"
+changeTagConfigName = r"规范标签---替换.txt"
 
 #需要删除的文件夹路径
 Deletelist_Folder=[]
@@ -28,9 +28,9 @@ DeleteConfig = []
 ChangeConfigDic = {}
 
 if __name__=="__main__":
-	Deletelist_Folder = ConfigTool.ReadConfig(sys.path[0]+ '\\' + deleteFolderConfigName)
-	DeleteConfig = ConfigTool.ReadConfig(sys.path[0]+ '\\' + deleteTagConfigName)
-	ChangeConfig = ConfigTool.ReadConfig(sys.path[0]+ '\\' + changeTagConfigName)
+	Deletelist_Folder = ConfigTool.ReadConfigByTxtName(deleteFolderConfigName)
+	DeleteConfig = ConfigTool.ReadConfigByTxtName(deleteTagConfigName)
+	ChangeConfig = ConfigTool.ReadConfigByTxtName(changeTagConfigName)
 	for linestr in ChangeConfig:
 		splitlist = linestr.split("——", 1)
 		# Debug.Log(splitlist[0])

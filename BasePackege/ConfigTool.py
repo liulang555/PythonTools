@@ -1,4 +1,10 @@
 import sys
+import os
+import DirectoryOpusTool
+
+current_dir = os.path.dirname(os.path.abspath(__file__))
+allUsedConfigDirName = "\\AllUsedConfig\\"
+
 
 def ReadConfig(path):
     list = []
@@ -17,3 +23,14 @@ def ReadConfig(path):
                 list.append(line)
         file.close()
         return list
+
+
+def GetConfigPath(txtName):
+    return  current_dir + allUsedConfigDirName + txtName
+
+def ReadConfigByTxtName(txtName):
+    path = GetConfigPath(txtName)
+    return ReadConfig(path)
+
+def OpenConfigDir():
+    DirectoryOpusTool.OpenDirByOpenWindow(current_dir + allUsedConfigDirName)
