@@ -26,7 +26,8 @@ if __name__=="__main__":
 		L =	DirTool.get_allfile_name(root)
 		for file in L:
 			if file.endswith('.nfo'):
-				randomFileList.append(os.path.dirname(file))
+				if file not in randomFileList:
+					randomFileList.append(os.path.dirname(file))
 	openFile = random.sample(randomFileList, 1)
 	# Debug.Log("随机路径：" + openFile[0])
 	DirectoryOpusTool.OpenDirByOpenWindow(openFile[0])

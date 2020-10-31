@@ -14,7 +14,7 @@ Debug = LogTool.Debug()
 Debug.InitLogger(current_dir)
 
 ConfigCheboxID = 10000
-TagConfiName = "可编辑标签.txt"
+TagConfiName = "编辑标签--预设标签.txt"
 
 class mywindow(QtWidgets.QWidget, Ui_Dialog):
     def __init__(self):

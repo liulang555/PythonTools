@@ -9,20 +9,26 @@ import LogTool
 # python -m pip install pypiwin32    安装方式，使用cmd执行这句
 from win32com.shell import shell, shellcon
 
+#系统属性
+CREATE_NO_WINDOW = 0x08000000
+#ffmpeg exe名字
 ffmpegName = 'ffmpeg'
+#获取当前文件的绝对路径
+abs_file = __file__
+#分割字符串找到文件夹路径
+abs_dir = abs_file[:abs_file.rfind("\\")]
+#拼接成ffmpeg 路径
+ffmpegPath = abs_dir + '\\' + ffmpegName
+MergeFileListName = r"\\filelist.txt"
+#可以剪切生产的视频个数
 CDMaxNum = 100
 
 Debug = LogTool.Debug()
 Debug.InitLogger(sys.path[0])
 
 class ffmpegTool:
+    #剪切视频
     def CutMovie(self, path, starttime, endtime, isReplace):
-        #获取当前文件的绝对路径
-        abs_file = __file__
-        #分割字符串找到文件夹路径
-        abs_dir = abs_file[:abs_file.rfind("\\")]
-        #拼接成ffmpeg 路径
-        ffmpegPath = abs_dir + '\\' + ffmpegName
         # 日志还是打印到调用方的文件夹中
         # self.Debug = LogToLocal.Debug()
         # self.Debug.InitLogger(sys.path[0])
@@ -57,8 +63,6 @@ class ffmpegTool:
             os.rename(newFile, curpath)
         # return retcode
         return 1
-
-
 
     # 获取一个未曾创建的名字
     def GetNewFileName(self, path):
@@ -149,3 +153,67 @@ class ffmpegTool:
                                  shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION, None, None))  # 删除文件到回收站
         if not res[1]:
             os.system('del '+filename)
+
+    #合成
+    # ffmpeg -f concat -i filelist.txt -c copy output.mkv
+    def MergeMovie(self,path):
+        Debug.Log("MergeMovie path: "+path)
+        fileListTxtPath = path + MergeFileListName
+        curVideolist,curOtherFilelist = self.GenerateMergeFileListTxt(path,fileListTxtPath)
+        Debug.Log("fileListTxtPath: "+fileListTxtPath)
+        newFile = self.GetMergeNewFileName(curVideolist)
+        if newFile == None:
+            return 1
+        Debug.Log("newFile: "+newFile)
+        process = subprocess.Popen(
+        [ffmpegPath,'-f', 'concat','-safe','0','-i', fileListTxtPath,'-c','copy',newFile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        stdout, stderr = process.communicate()
+        Debug.Log(stdout)
+        Debug.Log(stderr)
+        self.DeleteOtherFile(fileListTxtPath,curVideolist,curOtherFilelist)
+        return 1
+    #生成合成需要的配置txt文件
+    def GenerateMergeFileListTxt(self,path,fileListTxtPath):
+        if os.path.exists(fileListTxtPath):
+            os.remove(fileListTxtPath)
+        #不递归遍历文件夹 找出所有文件
+        curVideolist=[]
+        curOtherFilelist=[]
+        for filename in os.listdir(path):
+            curFilePath = os.path.join(path, filename)
+            if os.path.splitext(filename)[1] == '.nfo':
+                Debug.Log("nfo file : " + curFilePath)
+                curOtherFilelist.append(curFilePath)
+            elif os.path.splitext(filename)[1] == '.jpg':
+                Debug.Log("jpg file : " + curFilePath)
+                curOtherFilelist.append(curFilePath)
+            else:
+                Debug.Log("vedio file : " + curFilePath)
+                curVideolist.append(curFilePath)
+        with open(fileListTxtPath,"a") as file:   #只需要将之前的”w"改为“a"即可，代表追加内容
+            for curFilePath in curVideolist:
+                Debug.Log("Add vedio file to txt: " + curFilePath)
+                file.write("file \'"+curFilePath+"\'\n")
+        return curVideolist,curOtherFilelist
+    #获取合成后的视频名字
+    def GetMergeNewFileName(self,curVideolist):
+        for curFilePath in curVideolist:
+            pathSplite = os.path.splitext(curFilePath)
+            for num in range(1, CDMaxNum):
+                cdEndStr = '-CD'+str(num)
+                if pathSplite[0].endswith(cdEndStr):
+                    newFile = curFilePath.replace(cdEndStr, '')
+                    return newFile
+        Debug.Log("GetMergeNewFileName fail: ")
+        return None
+    #合成之后删除不要的图片和nfo文件
+    def DeleteOtherFile(self,fileListTxtPath,curVideolist,curOtherFilelist):
+        if os.path.exists(fileListTxtPath):
+            os.remove(fileListTxtPath)
+        for curFilePath in curOtherFilelist:
+            if os.path.exists(curFilePath):
+                # os.remove(curFilePath)
+                self.deltorecyclebin(curFilePath)
+        for curFilePath in curVideolist:
+            if os.path.exists(curFilePath):
+                self.deltorecyclebin(curFilePath)

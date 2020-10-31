@@ -1,14 +1,14 @@
-
 # 修改INFO
-
 import xml.etree.ElementTree as ET
 import LogTool
 import DirTool
 import sys
 import os
+import TranslateTool
 
 tagElement_tag = "tag"
 tagElement_genre = "genre"
+tagElement_title = "title"
 
 class MovieInfoTool:
 	def ReadInfoFile(self,path,debug):
@@ -33,8 +33,9 @@ class MovieInfoTool:
 				return 0 #已经有了
 		# 增加
 		e = ET.Element(tagElement_genre)
+		e.tail = "\n  "  #美化操作   增加换行和空格
 		e.text = title
-		self.root.insert(2, e)
+		self.root.insert(8, e)  #从第8个开始插入，和原先的放一起
 
 	def DelteTag(self,title):
 		self.DeleteRemoveAllTag(tagElement_tag)
@@ -70,6 +71,18 @@ class MovieInfoTool:
 				# print("改名： "+text)
 				element.text = ChangeConfigDic[text]
 		self.SaveNFO()
+	def TranslateToChinese(self):
+		for element in self.root.findall(tagElement_title):
+			curstr = element.text
+			# curstr = r"ウエディングドレスで初生挿入"
+			self.Debug.Log("读取标题: "+curstr)
+			translateStr = TranslateTool.baiduAPI_translate_main(curstr)
+			if translateStr == None:
+				self.Debug.Log("翻译失败: "+ curstr)
+			else:
+				self.Debug.Log("翻译成功: "+translateStr)
+				element.text = translateStr
+				self.SaveNFO()
 
 # 读取一个文件夹中所有NFO文件
 class MovieInfoToolList:
