@@ -24,6 +24,14 @@ def ReadConfig(path):
         file.close()
         return list
 
+def SaveConfigToEnd(txtName,content):
+    try:
+        path = GetConfigPath(txtName)
+        file = open(path, "a", encoding='utf-8')#写入文件，若文件不存在则会先创建再写入，但不会覆盖原文件，而是追加在文件末尾
+        file.write('\n'+content)
+        file.close()
+    except IOError:
+        print("save file fail:  " + path+" content: "+content)
 
 def GetConfigPath(txtName):
     return  current_dir + allUsedConfigDirName + txtName

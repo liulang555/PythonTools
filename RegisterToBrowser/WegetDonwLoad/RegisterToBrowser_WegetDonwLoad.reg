@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+[HKEY_CLASSES_ROOT\WegetDonwLoad]
+"URL Protocol"="D:\\SourceTreeFloder\\PythonTools\\RegisterToBrowser\\WegetDonwLoad\\WegetDonwLoad.bat"
+@="FileVersionProtocol"
+[HKEY_CLASSES_ROOT\WegetDonwLoad\DefaultIcon]
+@="D:\\SourceTreeFloder\\PythonTools\\RegisterToBrowser\\WegetDonwLoad\\WegetDonwLoad.bat,1"
+[HKEY_CLASSES_ROOT\WegetDonwLoad\shell]
+[HKEY_CLASSES_ROOT\WegetDonwLoad\shell\open]
+[HKEY_CLASSES_ROOT\WegetDonwLoad\shell\open\command]
+@="\"D:\\SourceTreeFloder\\PythonTools\\RegisterToBrowser\\WegetDonwLoad\\WegetDonwLoad.bat\" \"%1\""

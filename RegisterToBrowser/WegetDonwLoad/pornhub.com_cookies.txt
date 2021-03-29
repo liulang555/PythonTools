@@ -1,0 +1,16 @@
+# Netscape HTTP Cookie File
+# http://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file!  Do not edit.
+
+.pornhub.com	TRUE	/	FALSE	1607098060	platform_cookie_reset	pc
+.pornhub.com	TRUE	/	FALSE	1919866060	bs	2gk69si6mhlzuf355oa1em4oma8jbt1j
+.pornhub.com	TRUE	/	FALSE	1636042060	ss	870684362491679393
+.pornhub.com	TRUE	/	FALSE	1607098110	fg_9d12f2b2865de2f8c67706feaa332230	92373.100000
+.pornhub.com	TRUE	/	FALSE	1607098110	fg_7133c455c2e877ecb0adfd7a6ec6d6fe	55793.100000
+.pornhub.com	TRUE	/	FALSE	1607620698	expiredEnterModalShown	1
+.pornhub.com	TRUE	/	FALSE	1607628679	ats_jp_vkey	ph5f3da1e0a09fd
+.pornhub.com	TRUE	/	FALSE	1605280282	ua	6ebb257992654232c93d20a2b00d8336
+.pornhub.com	TRUE	/	FALSE	1605798682	platform	pc
+hubt.pornhub.com	FALSE	/	FALSE	0	RNLBSERVERID	ded7336
+cn.pornhub.com	FALSE	/	TRUE	1605229628	_suo7zh32kk	1
+cn.pornhub.com	FALSE	/	TRUE	1605230764	_v9noffuef3	3

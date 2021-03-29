@@ -1,0 +1,10 @@
+Windows Registry Editor Version 5.00
+[HKEY_CLASSES_ROOT\OpenPotPlay]
+"URL Protocol"="C:\\Program Files\\DAUM\\PotPlayer\\PotPlayerMini64.exe"
+@="FileVersionProtocol"
+[HKEY_CLASSES_ROOT\OpenPotPlay\DefaultIcon]
+@="C:\\Program Files\\DAUM\\PotPlayer\\PotPlayerMini64.exe,1"
+[HKEY_CLASSES_ROOT\OpenPotPlay\shell]
+[HKEY_CLASSES_ROOT\OpenPotPlay\shell\open]
+[HKEY_CLASSES_ROOT\OpenPotPlay\shell\open\command]
+@="\"C:\\Program Files\\DAUM\\PotPlayer\\PotPlayerMini64.exe\" \"%1\""

@@ -1,6 +1,7 @@
 1.  本地模块使用说明  
 module_myLocalPackge.pth  放到 Python安装目录下的\Lib\site-packages文件夹中
 示例    C:\Users\BugCreater\Anaconda3\Lib\site-packages
+C:\Users\BugCreate\AppData\Local\Programs\Python\Python39\Lib\site-packages
 
 增删 直接修改文件里面的路径就可以了
 

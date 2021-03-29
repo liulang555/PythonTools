@@ -141,7 +141,6 @@ class ffmpegTool:
     def cutVideo(self, startPoint, endPoint, path, newFile,ffmpegPath):
         command = [ffmpegPath, '-ss', startPoint, '-t', endPoint, '-accurate_seek',
                    '-i', path, '-codec', 'copy', '-avoid_negative_ts', '1', newFile]
-        CREATE_NO_WINDOW = 0x08000000
         subprocess.call(command, creationflags = CREATE_NO_WINDOW)
         return 1
         # 删除到回收站
@@ -150,7 +149,7 @@ class ffmpegTool:
         # print('deltorecyclebin', filename)
         # os.remove(filename) #直接删除文件，不经过回收站
         res = shell.SHFileOperation((0, shellcon.FO_DELETE, filename, None, shellcon.FOF_SILENT |
-                                 shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION, None, None))  # 删除文件到回收站
+                                 shellcon.FOF_ALLOWUNDO | shellcon.FOF_NOCONFIRMATION | shellcon.FOF_NOERRORUI, None, None))  # 删除文件到回收站
         if not res[1]:
             os.system('del '+filename)
 
@@ -165,11 +164,13 @@ class ffmpegTool:
         if newFile == None:
             return 1
         Debug.Log("newFile: "+newFile)
-        process = subprocess.Popen(
-        [ffmpegPath,'-f', 'concat','-safe','0','-i', fileListTxtPath,'-c','copy',newFile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        stdout, stderr = process.communicate()
-        Debug.Log(stdout)
-        Debug.Log(stderr)
+        command = [ffmpegPath,'-f', 'concat','-safe','0','-i', fileListTxtPath,'-c','copy',newFile]
+        subprocess.call(command, creationflags = CREATE_NO_WINDOW)
+        # process = subprocess.Popen(
+        # [ffmpegPath,'-f', 'concat','-safe','0','-i', fileListTxtPath,'-c','copy',newFile], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        # stdout, stderr = process.communicate()
+        # Debug.Log(stdout)
+        # Debug.Log(stderr)
         self.DeleteOtherFile(fileListTxtPath,curVideolist,curOtherFilelist)
         return 1
     #生成合成需要的配置txt文件
